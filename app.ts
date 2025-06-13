@@ -6,6 +6,7 @@ import contactController from "./controllers/contact";
 import loginController from "./controllers/login";
 import publicController from "./controllers/public";
 import { swaggerUi, swaggerSpec } from "./swagger";
+import connectToDB from "./db";
 
 require("dotenv").config();
 
@@ -26,5 +27,7 @@ app.use(
 );
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+connectToDB();
 
 export default app;
