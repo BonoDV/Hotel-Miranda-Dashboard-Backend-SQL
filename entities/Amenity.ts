@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Room } from "./Room";
 
-@Entity("amenities")
+@Entity()
 export class Amenity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ length: 50 })
+  @Column()
   name!: string;
 }

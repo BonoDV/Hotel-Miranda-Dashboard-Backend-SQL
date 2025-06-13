@@ -1,43 +1,45 @@
-import { Entity, PrimaryColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { Room } from "./Room";
 
-@Entity("bookings")
+@Entity()
 export class Booking {
-  @PrimaryColumn({ type: "varchar", length: 36 })
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ length: 100 })
+  @Column({ nullable: true })
   name!: string;
 
-  @Column("text")
+  @Column({ nullable: true, type: "text" })
   image!: string;
 
-  @Column("date")
-  orderDate!: string;
+  @Column({ type: "date", nullable: true })
+  orderDate!: Date;
 
-  @Column("date")
-  checkIn!: string;
+  @Column({ type: "date", nullable: true })
+  checkIn!: Date;
 
-  @Column("date")
-  checkOut!: string;
+  @Column({ type: "date", nullable: true })
+  checkOut!: Date;
 
-  @Column({ type: "tinyint", width: 1 })
+  @Column({ type: "tinyint", nullable: true })
   specialRequest_status!: number;
 
-  @Column("text")
+  @Column({ type: "text", nullable: true })
   specialRequest_text!: string;
 
-  @Column({ length: 50 })
+  @Column({ nullable: true })
   roomType!: string;
-
-  @Column({ length: 50 })
-  status!: string;
-
-  @Column({ length: 20 })
-  phone!: string;
-
-  @Column({ length: 100 })
-  email!: string;
 
   @Column()
   roomNumber!: number;
+
+  @ManyToOne(() => Room, (room) => room.bookings)
+  @JoinColumn({ name: "roomNumber" })
+  room!: Room;
 }

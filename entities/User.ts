@@ -1,40 +1,34 @@
 import { Entity, PrimaryColumn, Column } from "typeorm";
 
-@Entity("users")
+@Entity()
 export class User {
-  @PrimaryColumn({ type: "varchar", length: 36 })
+  @PrimaryColumn()
   id!: string;
 
-  @Column("text")
+  @Column({ type: "text", nullable: true })
   photo!: string;
 
-  @Column({ length: 100 })
+  @Column({ nullable: true })
   first_name!: string;
 
-  @Column({ length: 100 })
+  @Column({ nullable: true })
   last_name!: string;
 
-  @Column({ length: 100 })
+  @Column({ nullable: true })
   job!: string;
 
-  @Column({ length: 100 })
+  @Column({ nullable: true })
   email!: string;
 
-  @Column({ length: 20 })
+  @Column({ nullable: true })
   phone_number!: string;
 
-  @Column("date")
-  start_date!: string;
+  @Column({ type: "date", nullable: true })
+  start_date!: Date;
 
-  @Column({ length: 50 })
+  @Column({ nullable: true })
   schedule!: string;
 
-  @Column("text")
+  @Column({ type: "text", nullable: true })
   function_description!: string;
-
-  @Column({ type: "tinyint", width: 1 })
-  status!: number;
-
-  @Column("text")
-  password!: string;
 }

@@ -1,34 +1,42 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
+import { Booking } from "./Booking";
+import { RoomAmenity } from "./RoomAmenity";
 
-@Entity("rooms")
+@Entity()
 export class Room {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   roomNumber!: number;
 
-  @Column({ length: 50 })
+  @Column({ nullable: true })
   roomType!: string;
 
-  @Column({ length: 50 })
+  @Column({ nullable: true })
   bedType!: string;
 
-  @Column({ length: 20 })
+  @Column({ nullable: true })
   roomFloor!: string;
 
-  @Column({ length: 200 })
+  @Column({ nullable: true, type: "varchar" })
   photos!: string;
 
-  @Column("text")
+  @Column({ nullable: true, type: "text" })
   description!: string;
 
-  @Column({ length: 3 })
+  @Column({ nullable: true })
   offer!: string;
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column({ type: "decimal", nullable: true })
   price!: number;
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column({ type: "decimal", nullable: true })
   discount!: number;
 
-  @Column("text")
+  @Column({ nullable: true, type: "text" })
   cancellation!: string;
+
+  @OneToMany(() => Booking, (booking) => booking.room)
+  bookings!: Booking[];
+
+  @OneToMany(() => RoomAmenity, (ra) => ra.room)
+  roomAmenities!: RoomAmenity[];
 }
