@@ -6,13 +6,13 @@ import contactController from "./controllers/contact";
 import loginController from "./controllers/login";
 import publicController from "./controllers/public";
 import { swaggerUi, swaggerSpec } from "./swagger";
-import connectToDB from "./db";
+import cors from "cors";
 
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT;
-
+app.use(cors());
 app.use(express.json());
 
 // Montar las rutas del controlador
@@ -27,7 +27,5 @@ app.use(
 );
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-connectToDB();
 
 export default app;

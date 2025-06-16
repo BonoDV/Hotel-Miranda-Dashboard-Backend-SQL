@@ -33,20 +33,19 @@ export const loginController = Router();
  *
  */
 
-loginController.post("/login", (req: any, res: any) => {
-  const { username, password } = req.body;
+loginController.post("/login", async (req: any, res: any) => {
+  console.log("Login request received:", req.body);
+  try {
+    const { status, data, message } = await loginUser(
+      req.body.email,
+      req.body.password
+    );
 
-  if (!username || !password) {
-    return res.status(400).json({ message: "Usuario y contraseña requeridos" });
+    return res.status(status).json(data ? data : { message });
+  } catch (error) {
+    console.error("Error en login:", error);
+    return res.status(500).json({ message: "Error interno del servidor" });
   }
-
-  const token = loginUser(username, password);
-
-  if (!token) {
-    return res.status(401).json({ message: "Credenciales inválidas" });
-  }
-
-  return res.json({ token });
 });
 
 export default loginController;

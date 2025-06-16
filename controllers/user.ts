@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { authenticateToken } from "../middleware/auth";
 import UserList from "./../data/users.json";
-import { getAllUsers, getUsersById } from "../services/user";
+import { getAllUsers } from "../services/user";
 export const usersController = Router();
 
 /**
@@ -81,9 +81,9 @@ export const usersController = Router();
 usersController.get(
   "/users",
   authenticateToken,
-  (req: Request, res: Response) => {
-    const users = getAllUsers();
-    res.send(users);
+  async (req: Request, res: Response) => {
+    const users = await getAllUsers();
+    res.json(users);
   }
 );
 
@@ -114,19 +114,23 @@ usersController.get(
  */
 
 // Get user by ID
-usersController.get(
+/* usersController.get(
   "/users/:id",
   authenticateToken,
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    const userId = req.params.id;
     try {
-      const userId = req.params.id;
-      const user = getUsersById(userId);
-      res.send(user);
-    } catch (error) {
-      res.status(404).send("User not found");
+      const userFinded = await getUsersById(userId);
+      res.status(200).send(userFinded);
+    } catch (error: any) {
+      if (error.message === "User not found") {
+        res.status(404).send({ message: error.message });
+      } else {
+        res.status(500).send({ message: error.message });
+      }
     }
   }
-);
+); */
 
 /**
  * @swagger

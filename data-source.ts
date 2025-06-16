@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   password: process.env.MYSQL_PASSWORD,
   database: "hotelmirandadashboard",
   synchronize: true,
-  logging: true,
+  logging: false,
   entities: [Room, Booking, User, Amenity, RoomAmenity],
   subscribers: [],
   migrations: [],
