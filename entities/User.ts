@@ -31,4 +31,7 @@ export class User {
 
   @Column({ type: "text", nullable: true })
   function_description!: string;
+
+  @Column({ type: "varchar", length: 255 })
+  password!: string;
 }
