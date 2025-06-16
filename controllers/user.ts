@@ -1,7 +1,13 @@
 import { Request, Response, Router } from "express";
 import { authenticateToken } from "../middleware/auth";
 import UserList from "./../data/users.json";
-import { getAllUsers } from "../services/user";
+import {
+  getAllUsers,
+  getUsersById,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "../services/user";
 export const usersController = Router();
 
 /**
@@ -114,7 +120,7 @@ usersController.get(
  */
 
 // Get user by ID
-/* usersController.get(
+usersController.get(
   "/users/:id",
   authenticateToken,
   async (req: Request, res: Response) => {
@@ -130,7 +136,7 @@ usersController.get(
       }
     }
   }
-); */
+);
 
 /**
  * @swagger
@@ -156,9 +162,14 @@ usersController.get(
 usersController.post(
   "/users",
   authenticateToken,
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const newUser = req.body;
-    res.status(201).send(`New user created: ${JSON.stringify(newUser)}`);
+    try {
+      const userCreate = await createUser(newUser);
+      res.status(201).send(`New user created: ${JSON.stringify(newUser)}`);
+    } catch (error: any) {
+      res.status(500).send({ message: error.message });
+    }
   }
 );
 
@@ -193,9 +204,15 @@ usersController.post(
 usersController.put(
   "/users/:id",
   authenticateToken,
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const userId = req.params.id;
-    res.send(`User with ID: ${userId} updated`);
+    const updateUserData = req.body;
+    try {
+      const updatedUser = await updateUser(userId, updateUserData);
+      res.status(200).send(`User with ID: ${userId} updated successfully`);
+    } catch (error: any) {
+      res.status(500).send({ message: error.message });
+    }
   }
 );
 
@@ -223,9 +240,14 @@ usersController.put(
 usersController.delete(
   "/users/:id",
   authenticateToken,
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const userId = req.params.id;
-    res.send(`User with ID: ${userId} deleted`);
+    try {
+      const deletedUser = await deleteUser(userId);
+      res.status(200).send(deletedUser);
+    } catch (error: any) {
+      res.status(500).send({ message: error.message });
+    }
   }
 );
 

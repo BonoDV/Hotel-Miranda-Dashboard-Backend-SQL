@@ -1,5 +1,7 @@
 import { User } from "../entities/User";
 import { AppDataSource as dataSource } from "../data-source";
+import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcrypt";
 
 export const getAllUsers = async () => {
   const userRepository = dataSource.getRepository(User);
@@ -7,8 +9,9 @@ export const getAllUsers = async () => {
   return users;
 };
 
-/* export const getUsersById = async (id: string) => {
-  const user = await User.findOne({ id: id });
+export const getUsersById = async (id: string) => {
+  const userRepository = dataSource.getRepository(User);
+  const user = await userRepository.findOne({ where: { id: id } });
   if (!user) {
     throw new Error("User not found");
   }
@@ -21,24 +24,39 @@ export const createUser = async (userData: any) => {
     userData.start_date = new Date(userData.start_date.$date);
   }
 
-  const newUser = new User(userData);
-  newUser.id = new mongoose.Types.ObjectId().toString();
+  const newUser = new User();
+  newUser.id = uuidv4();
 
-  const validationError = newUser.validateSync();
-  if (validationError) {
-    throw new Error(`Validation failed: ${validationError.message}`);
+  newUser.photo = userData.photo;
+  newUser.first_name = userData.first_name;
+  newUser.last_name = userData.last_name;
+  newUser.email = userData.email;
+  newUser.phone_number = userData.phone_number;
+  newUser.job = userData.job;
+  newUser.start_date = userData.start_date;
+  newUser.schedule = userData.schedule;
+  newUser.function_description = userData.function_description;
+
+  // Validar que venga password y hacer hash
+  if (!userData.password) {
+    throw new Error("Password is required");
   }
+  newUser.password = await bcrypt.hash(userData.password, 10);
 
-  const existingUser = await User.findOne({ id: newUser.id });
+  const userRepository = dataSource.getRepository(User);
+  const existingUser = await userRepository.findOne({
+    where: { id: newUser.id },
+  });
   if (existingUser) {
     throw new Error("User with this ID already exists");
   }
 
-  return await newUser.save();
+  return await userRepository.save(newUser);
 };
 
 export const updateUser = async (id: string, userData: any) => {
-  const user = await User.findOne({ id: id });
+  const userRepository = dataSource.getRepository(User);
+  const user = await userRepository.findOne({ where: { id: id } });
   if (!user) {
     throw new Error("User not found");
   }
@@ -48,18 +66,15 @@ export const updateUser = async (id: string, userData: any) => {
   }
 
   Object.assign(user, userData);
-  const validationError = user.validateSync();
-  if (validationError) {
-    throw new Error(`Validation failed: ${validationError.message}`);
-  }
-  return await user.save();
+  return await userRepository.update(id, userData);
 };
 
 export const deleteUser = async (id: string) => {
-  const user = await User.findOne({ id: id });
+  const userRepository = dataSource.getRepository(User);
+  const user = await userRepository.findOne({ where: { id: id } });
   if (!user) {
     throw new Error("User not found");
   }
-  await User.deleteOne({ id: id });
+  await userRepository.delete(id);
   return { message: "User deleted successfully" };
-}; */
+};
